@@ -25,7 +25,8 @@ const lightbox = new SimpleLightbox('.gallery a', {
   });
 
 const getData = data => {
-  if (data.hits.length === 0) {
+const totalPages = Math.ceil(data.totalHits / api.per_page);
+  if (data.totalHits === 0) {
     clearData();
     refs.loadMore.classList.add('visually-hidden');
     Notiflix.Notify.failure(
@@ -34,10 +35,10 @@ const getData = data => {
     return;
   }
 
-  if ((api.page === Math.trunc(data.totalHits / data.hits.length)) && data.totalHits > 40) {
+  if ((api.page === totalPages) && data.totalHits > 40) {
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     refs.loadMore.classList.add('visually-hidden');
-    return;
+    return data.hits;
   }
 
   if (data.hits.length > 0) {
@@ -97,6 +98,7 @@ const showNextGallery = async () => {
 refs.searchForm.addEventListener('submit', async e => {
   e.preventDefault();
   clearData();
+  refs.loadMore.classList.add('visually-hidden');
   api.page = 1;
   const searchQuery = e.currentTarget.elements.searchQuery.value;
   api.newInput = searchQuery.trim();

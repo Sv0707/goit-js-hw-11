@@ -7,6 +7,7 @@ export default class ApiService {
   constructor() {
     this.page = 1;
     this.searchItem = '';
+    this.per_page = 40;
   }
 
   async fetchGallery() {
@@ -17,7 +18,7 @@ export default class ApiService {
       orientation: 'horizontal',
       safesearch: 'true',
       page: this.page,
-      per_page: 40,
+      per_page: this.per_page,
     });
 
     const res = await axios.get(`${this.BASE_URL}?${queryParams}`);
