@@ -34,17 +34,24 @@ const getData = data => {
     return;
   }
 
-  if (api.page === Math.trunc(data.totalHits / data.hits.length)) {
+  if ((api.page === Math.trunc(data.totalHits / data.hits.length)) && data.totalHits > 40) {
     Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     refs.loadMore.classList.add('visually-hidden');
     return;
   }
 
   if (data.hits.length > 0) {
-    if (api.page === 1) {
+    if (api.page === 1 && data.totalHits > 40) {
       Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
     }
+      if (api.page === 1 && data.totalHits <= 40) {
+    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    refs.loadMore.classList.add('visually-hidden');
     return data.hits;
+  }
+    refs.loadMore.classList.remove('visually-hidden');
+    return data.hits;
+    
   }
 };
 
@@ -74,7 +81,6 @@ const makeGalleryMarkup = array => {
     .join('');
 
   refs.gallery.insertAdjacentHTML('beforeend', markup);
-  refs.loadMore.classList.remove('visually-hidden');
 
   lightbox.refresh();
 };
@@ -94,6 +100,7 @@ refs.searchForm.addEventListener('submit', async e => {
   api.page = 1;
   const searchQuery = e.currentTarget.elements.searchQuery.value;
   api.newInput = searchQuery.trim();
+//   showGallery().then(getData).then(makeGalleryMarkup).catch(err => console.log(err));
   const dataResult = await showGallery().catch(err => console.log(err));
   makeGalleryMarkup(getData(dataResult));
 });
@@ -101,5 +108,5 @@ refs.searchForm.addEventListener('submit', async e => {
 refs.loadMore.addEventListener('click', async e => {
   const dataResult = await showNextGallery().catch(err => console.log(err));
   makeGalleryMarkup(getData(dataResult));
-  // showNextGallery().then(getData).then(makeGalleryMarkup).catch(err => console.log(err));
+// showNextGallery().then(getData).then(makeGalleryMarkup).catch(err => console.log(err));
 });
