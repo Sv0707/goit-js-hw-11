@@ -32,6 +32,7 @@ p {
   font-size: 18px;
   height: 35px;
   border-radius: 4px;
+  padding-left: 5px;
 }
 
 .visually-hidden {
